@@ -1,7 +1,17 @@
 import React from 'react';
-import { TableRow, TableCell } from '@mui/material';
+import { TableRow, TableCell, Chip, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { IStock } from '../../types';
+import { IStock } from '@/types';
+
+// Map stock type to a Chip color
+type ChipColor = 'primary' | 'secondary' | 'warning' | 'info' | 'default';
+function typeChipColor(type: string): ChipColor {
+  if (type.toLowerCase().includes('common')) return 'primary';
+  if (type.toLowerCase().includes('etf')) return 'secondary';
+  if (type.toLowerCase().includes('warrant')) return 'warning';
+  if (type.toLowerCase().includes('preferred')) return 'info';
+  return 'default';
+}
 
 interface IStockTableRowProps {
   stock: IStock;
@@ -9,8 +19,6 @@ interface IStockTableRowProps {
 }
 
 const StockTableRow: React.FC<IStockTableRowProps> = React.memo(({ stock, onHover }) => {
-  // Stable handler — only recreated when symbol or onHover changes,
-  // so React.memo can skip re-renders when neither changes.
   const handleMouseEnter = React.useCallback(() => {
     onHover?.(stock.symbol);
   }, [onHover, stock.symbol]);
@@ -18,11 +26,36 @@ const StockTableRow: React.FC<IStockTableRowProps> = React.memo(({ stock, onHove
   return (
     <TableRow onMouseEnter={handleMouseEnter}>
       <TableCell>
-        <Link to={`/stock/${stock.symbol}`}>{stock.symbol}</Link>
+        <Typography
+          component={Link}
+          to={`/stock/${stock.symbol}`}
+          variant="body2"
+          fontWeight={600}
+          color="primary"
+          sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+        >
+          {stock.symbol}
+        </Typography>
       </TableCell>
-      <TableCell>{stock.name}</TableCell>
-      <TableCell>{stock.currency}</TableCell>
-      <TableCell>{stock.type}</TableCell>
+      <TableCell>
+        <Typography variant="body2" noWrap>
+          {stock.name}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography variant="body2" color="text.secondary">
+          {stock.currency}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Chip
+          label={stock.type}
+          size="small"
+          color={typeChipColor(stock.type)}
+          variant="outlined"
+          sx={{ fontSize: 11, maxWidth: '100%' }}
+        />
+      </TableCell>
     </TableRow>
   );
 });

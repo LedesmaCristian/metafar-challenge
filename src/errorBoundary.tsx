@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -15,19 +17,39 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-    // Actualiza el estado para que el siguiente renderizado muestre la interfaz de error.
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Puedes registrar el error en un servicio de registro de errores
     console.error('Error capturado:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      // Puedes personalizar el mensaje de error aquí
-      return <h1>¡Ups! Algo salió mal.</h1>;
+      return (
+        <Box
+          sx={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2,
+            p: 4,
+          }}
+        >
+          <ErrorOutlineIcon sx={{ fontSize: 64, color: 'error.main' }} />
+          <Typography variant="h5" fontWeight={600}>
+            ¡Ups! Algo salió mal
+          </Typography>
+          <Typography variant="body1" color="text.secondary" textAlign="center" maxWidth={420}>
+            Ocurrió un error inesperado. Por favor, recargá la página o intentá de nuevo más tarde.
+          </Typography>
+          <Button variant="contained" color="primary" onClick={() => window.location.reload()}>
+            Recargar página
+          </Button>
+        </Box>
+      );
     }
 
     return this.props.children;

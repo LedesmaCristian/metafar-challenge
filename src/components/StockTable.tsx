@@ -9,17 +9,21 @@ import {
   Box,
   Button,
   Typography,
+  InputAdornment,
+  TextField as MuiTextField,
+  Divider,
 } from '@mui/material';
-import { TextField, TableHeader, TableRow } from './atomics/index';
+import SearchIcon from '@mui/icons-material/Search';
+import { TableHeader, TableRow } from './atomics/index';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQueryClient } from '@tanstack/react-query';
-import { useStockList } from '../hooks/queries/useStockList';
-import { getStocks } from '../services/stockService';
-import useDebounce from '../hooks/useDebounce';
-import type { TwelveDataStock } from '../api/types';
+import { useStockList } from '@/hooks/queries/useStockList';
+import { getStocks } from '@/services/stockService';
+import useDebounce from '@/hooks/useDebounce';
+import type { TwelveDataStock } from '@/api/types';
 
 // ─── Column widths (shared between header and body) ──────────────────────────
-const COL_WIDTHS = ['15%', '50%', '15%', '20%'] as const;
+const COL_WIDTHS = ['15%', '45%', '12%', '28%'] as const;
 
 const ColGroup: React.FC = () => (
   <colgroup>
@@ -105,41 +109,88 @@ const StockTable: React.FC = () => {
   // ── Error state ─────────────────────────────────────────────────────────────
   if (isError) {
     return (
-      <Alert
-        severity="error"
-        action={
-          <Button color="inherit" size="small" onClick={() => refetch()}>
-            Reintentar
-          </Button>
-        }
-      >
-        {error?.message ?? 'Error al cargar la lista de acciones.'}
-      </Alert>
+      <Box sx={{ p: 3 }}>
+        <Alert
+          severity="error"
+          action={
+            <Button color="inherit" size="small" onClick={() => refetch()}>
+              Reintentar
+            </Button>
+          }
+        >
+          {error?.message ?? 'Error al cargar la lista de acciones.'}
+        </Alert>
+      </Box>
     );
   }
 
   return (
-    <>
-      <TextField label="Buscar por nombre" value={searchName} onChange={handleSearchNameChange} />
-      <TextField
-        label="Buscar por símbolo"
-        value={searchSymbol}
-        onChange={handleSearchSymbolChange}
-      />
+    <Box sx={{ p: { xs: 1, sm: 3 } }}>
+      {/* ── Page header ── */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h5" fontWeight={600} color="text.primary">
+          Mercado de Valores
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          NASDAQ — Datos en tiempo real
+        </Typography>
+      </Box>
 
-      <Paper>
+      {/* ── Search bar ── */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          mb: 2,
+          flexDirection: { xs: 'column', sm: 'row' },
+        }}
+      >
+        <MuiTextField
+          label="Buscar por nombre"
+          value={searchName}
+          onChange={handleSearchNameChange}
+          size="small"
+          variant="outlined"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <MuiTextField
+          label="Buscar por símbolo"
+          value={searchSymbol}
+          onChange={handleSearchSymbolChange}
+          size="small"
+          variant="outlined"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+
+      {/* ── Table card ── */}
+      <Paper elevation={2}>
         {/* Scrollable container — parentRef for the virtualizer */}
         <Box
           ref={parentRef}
           sx={{
             height: 600,
             overflowY: 'auto',
-            // Make the sticky thead work inside overflow container
+            overflowX: { xs: 'auto', sm: 'hidden' },
             '& thead': {
               position: 'sticky',
               top: 0,
               zIndex: 1,
-              bgcolor: 'background.paper',
+              bgcolor: '#F5F7FA',
             },
           }}
         >
@@ -158,7 +209,6 @@ const StockTable: React.FC = () => {
                 SKELETON_KEYS.map((i) => <SkeletonTableRow key={i} />)
               ) : (
                 <>
-                  {/* Top spacer */}
                   {paddingTop > 0 && (
                     <MuiTableRow>
                       <TableCell colSpan={4} sx={{ height: paddingTop, p: 0, border: 0 }} />
@@ -170,7 +220,6 @@ const StockTable: React.FC = () => {
                     return <TableRow key={stock.symbol} stock={stock} onHover={handlePrefetch} />;
                   })}
 
-                  {/* Bottom spacer */}
                   {paddingBottom > 0 && (
                     <MuiTableRow>
                       <TableCell colSpan={4} sx={{ height: paddingBottom, p: 0, border: 0 }} />
@@ -182,13 +231,27 @@ const StockTable: React.FC = () => {
           </table>
         </Box>
 
-        {!isLoading && (
-          <Typography variant="caption" sx={{ px: 2, py: 1, display: 'block' }}>
-            {filteredStocks.length} resultado{filteredStocks.length !== 1 ? 's' : ''}
+        <Divider />
+        <Box
+          sx={{
+            px: 2,
+            py: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="caption" color="text.secondary">
+            {isLoading
+              ? 'Cargando...'
+              : `${filteredStocks.length} resultado${filteredStocks.length !== 1 ? 's' : ''}`}
           </Typography>
-        )}
+          <Typography variant="caption" color="text.secondary">
+            Pase el cursor sobre una fila para precargar datos
+          </Typography>
+        </Box>
       </Paper>
-    </>
+    </Box>
   );
 };
 

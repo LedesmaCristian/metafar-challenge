@@ -1,6 +1,18 @@
 import React from 'react';
-import { RadioButton, DateInput, IntervalSelect, Button } from './atomics/index';
-import { getCurrentDay } from '../helpers';
+import {
+  Box,
+  Button,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { getCurrentDay } from '@/helpers';
 
 export interface StockQuoteParams {
   interval: string;
@@ -15,6 +27,16 @@ interface StockPreferenceFormProps {
   stockCurrency?: string | undefined;
   onParamsChange: (params: StockQuoteParams) => void;
 }
+
+const INTERVAL_OPTIONS = [
+  { value: '1min', label: '1 min' },
+  { value: '5min', label: '5 min' },
+  { value: '15min', label: '15 min' },
+  { value: '30min', label: '30 min' },
+  { value: '1h', label: '1 h' },
+  { value: '4h', label: '4 h' },
+  { value: '1day', label: '1 día' },
+];
 
 const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
   symbol,
@@ -35,7 +57,7 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
     [onParamsChange, interval, startDate, endDate, isRealTime],
   );
 
-  const handleIntervalChange = React.useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleIntervalChange = React.useCallback((event: SelectChangeEvent<string>) => {
     setInterval(event.target.value);
   }, []);
 
@@ -47,127 +69,121 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
     setEndDate(event.target.value);
   }, []);
 
-  const handleCheckboxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const rt = event.target.value === 'realtime';
-    if (rt) {
-      const today = getCurrentDay();
-      setStartDate(today);
-      setEndDate(today);
-    }
-    setIsRealTime(rt);
-  }, []);
+  const handleModeChange = React.useCallback(
+    (_: React.MouseEvent<HTMLElement>, value: string | null) => {
+      if (value === null) return; // prevent deselect
+      const rt = value === 'realtime';
+      if (rt) {
+        const today = getCurrentDay();
+        setStartDate(today);
+        setEndDate(today);
+      }
+      setIsRealTime(rt);
+    },
+    [],
+  );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        borderBottom: '1px solid #ccc',
-        padding: '10px',
-        marginBottom: '20px',
-      }}
-    >
-      <div style={styles.headerContainer}>
-        <div style={styles.headerTitle}>
-          {symbol}
-          {stockName ? ` - ${stockName}` : ''}
-          {stockCurrency ? ` - ${stockCurrency}` : ''}
-        </div>
-        <div style={styles.headerUser}>Usuario: Juan</div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={styles.radioContainer}>
-          <RadioButton
-            name="dataOption"
-            value="realtime"
-            checked={isRealTime}
-            onChange={handleCheckboxChange}
-            label="Tiempo Real"
-          />
-          <span style={styles.description}>
-            (utiliza la fecha actual, al graficar esta opción, se debe actualizar el gráfico en
-            forma automática según el intervalo seleccionado)
-          </span>
-        </div>
-        <div style={styles.radioContainer}>
-          <RadioButton
-            name="dataOption"
-            value="history"
-            checked={!isRealTime}
-            onChange={handleCheckboxChange}
-            label="Histórico"
-          />
-          <div style={styles.dateInputContainer}>
-            <DateInput
-              disabled={isRealTime}
-              value={startDate}
-              onChange={handleStartDateChange}
-              style={styles.dateInput}
-            />
-            <DateInput
-              disabled={isRealTime}
-              value={endDate}
-              onChange={handleEndDateChange}
-              style={styles.dateInput}
-            />
-          </div>
-        </div>
-        <IntervalSelect
-          value={interval}
-          onChange={handleIntervalChange}
-          style={styles.intervalSelect}
+    <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 2, sm: 3 } }} noValidate>
+      {/* ── Header ── */}
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}
+      >
+        <Box>
+          <Typography variant="h6" fontWeight={600}>
+            {symbol}
+            {stockName ? ` — ${stockName}` : ''}
+          </Typography>
+          {stockCurrency && (
+            <Typography variant="body2" color="text.secondary">
+              Moneda: {stockCurrency}
+            </Typography>
+          )}
+        </Box>
+        <Typography variant="body2" color="text.secondary">
+          Usuario: Juan
+        </Typography>
+      </Box>
+
+      {/* ── Controls row ── */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          alignItems: 'center',
+          flexWrap: { xs: 'wrap', md: 'nowrap' },
+        }}
+      >
+        {/* Mode toggle */}
+        <ToggleButtonGroup
+          value={isRealTime ? 'realtime' : 'history'}
+          exclusive
+          onChange={handleModeChange}
+          size="small"
+          color="primary"
+          sx={{ flexShrink: 0 }}
+        >
+          <ToggleButton value="realtime">Tiempo Real</ToggleButton>
+          <ToggleButton value="history">Histórico</ToggleButton>
+        </ToggleButtonGroup>
+
+        {/* Date inputs — disabled in real-time mode */}
+        <TextField
+          label="Fecha inicio"
+          type="datetime-local"
+          value={startDate}
+          onChange={handleStartDateChange}
+          disabled={isRealTime}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+          sx={{ minWidth: 200 }}
         />
-        <Button variant="contained" type="submit" style={styles.button}>
+        <TextField
+          label="Fecha fin"
+          type="datetime-local"
+          value={endDate}
+          onChange={handleEndDateChange}
+          disabled={isRealTime}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+          sx={{ minWidth: 200 }}
+        />
+
+        {/* Interval selector */}
+        <FormControl size="small" sx={{ minWidth: 120, flexShrink: 0 }}>
+          <InputLabel id="interval-label">Intervalo</InputLabel>
+          <Select
+            labelId="interval-label"
+            value={interval}
+            onChange={handleIntervalChange}
+            label="Intervalo"
+          >
+            {INTERVAL_OPTIONS.map((opt) => (
+              <MenuItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Submit */}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ flexShrink: 0, width: 160, ml: { md: 'auto' } }}
+        >
           Graficar
         </Button>
-      </div>
-    </form>
-  );
-};
+      </Box>
 
-const styles: Record<string, React.CSSProperties> = {
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  headerTitle: {
-    fontSize: '24px',
-    marginBottom: '10px',
-  },
-  headerUser: {
-    marginTop: '10px',
-    fontSize: '18px',
-    textAlign: 'right',
-  },
-  description: {
-    fontSize: '12px',
-    color: '#666',
-    marginLeft: '5px',
-  },
-  radioContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '10px',
-  },
-  dateInputContainer: {
-    margin: '0px 5px',
-  },
-  dateInput: {
-    padding: '5px',
-    fontSize: '14px',
-    margin: '10px 0px',
-  },
-  intervalSelect: {
-    padding: '5px',
-    fontSize: '17px',
-    marginBottom: '10px',
-  },
-  button: {
-    padding: '5px 10px',
-    fontSize: '14px',
-    cursor: 'pointer',
-  },
+      {isRealTime && (
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+          El gráfico se actualiza automáticamente según el intervalo seleccionado.
+        </Typography>
+      )}
+    </Box>
+  );
 };
 
 export default StockPreferenceForm;
