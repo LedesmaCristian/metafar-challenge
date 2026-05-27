@@ -11,8 +11,11 @@ export interface GetTimeSeriesParams {
 }
 
 export async function getTimeSeries(params: GetTimeSeriesParams): Promise<TwelveDataTimeSeriesResponse> {
+  const cleanParams = Object.fromEntries(
+    Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
+  );
   const response = await apiClient.get<TwelveDataTimeSeriesResponse>(ENDPOINTS.TIME_SERIES, {
-    params,
+    params: cleanParams,
   });
   return response.data;
 }

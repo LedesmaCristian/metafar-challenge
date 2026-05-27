@@ -1,12 +1,37 @@
 import { useQuery } from '@tanstack/react-query';
-import { getQuote } from '../../services/quoteService';
-import type { TwelveDataQuote } from '../../api/types';
+import { getTimeSeries } from '../../services/quoteService';
+import type { TwelveDataTimeSeriesResponse } from '../../api/types';
+import { intervalToMs } from '../../helpers';
 
-export function useStockQuote(symbol: string) {
-  return useQuery<TwelveDataQuote, Error>({
-    queryKey: ['quote', symbol],
-    queryFn: () => getQuote(symbol),
-    enabled: Boolean(symbol),
-    staleTime: 60 * 1_000, // 1 minute
+export interface UseStockQuoteParams {
+  symbol: string;
+  interval?: string;
+  startDate?: string;
+  endDate?: string;
+  isRealTime?: boolean;
+}
+
+export function useStockQuote({
+  symbol,
+  interval = '5min',
+  startDate,
+  endDate,
+  isRealTime = false,
+}: UseStockQuoteParams) {
+  const refetchInterval = isRealTime ? intervalToMs(interval) : undefined;
+
+  return useQuery<TwelveDataTimeSeriesResponse, Error>({
+    queryKey: ['quote', symbol, interval, startDate, endDate],
+    queryFn: () =>
+      getTimeSeries({
+        symbol,
+        interval,
+        start_date: startDate,
+        end_date: endDate,
+      }),
+    enabled: !!symbol,
+    staleTime: 0,
+    refetchInterval,
+    placeholderData: (previousData) => previousData,
   });
 }

@@ -6,6 +6,6 @@ export function useStockList(exchange = 'NASDAQ') {
   return useQuery<TwelveDataStock[], Error>({
     queryKey: ['stocks', exchange],
     queryFn: () => getStocks({ exchange, source: 'docs' }),
-    staleTime: 5 * 60 * 1_000, // 5 minutes
+    staleTime: Infinity,
   });
 }
