@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTimeSeries } from '../../services/quoteService';
-import type { TwelveDataTimeSeriesResponse } from '../../api/types';
-import { intervalToMs } from '../../helpers';
+import { getTimeSeries } from '@/services/quoteService';
+import type { TwelveDataTimeSeriesResponse } from '@/api/types';
+import { intervalToMs } from '@/helpers';
 
 export interface UseStockQuoteParams {
   symbol: string;
@@ -18,7 +18,9 @@ export function useStockQuote({
   endDate,
   isRealTime = false,
 }: UseStockQuoteParams) {
-  const refetchInterval = isRealTime ? intervalToMs(interval) : undefined;
+  // exactOptionalPropertyTypes: true requires `false` instead of `undefined` to
+  // disable refetchInterval, and explicit undefined-guarded optional fields.
+  const refetchInterval: number | false = isRealTime ? intervalToMs(interval) : false;
 
   return useQuery<TwelveDataTimeSeriesResponse, Error>({
     queryKey: ['quote', symbol, interval, startDate, endDate],
@@ -26,8 +28,8 @@ export function useStockQuote({
       getTimeSeries({
         symbol,
         interval,
-        start_date: startDate,
-        end_date: endDate,
+        ...(startDate !== undefined ? { start_date: startDate } : {}),
+        ...(endDate !== undefined ? { end_date: endDate } : {}),
       }),
     enabled: !!symbol,
     staleTime: 0,

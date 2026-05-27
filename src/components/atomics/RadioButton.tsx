@@ -1,21 +1,9 @@
-import * as React from "react";
-import { IRadioButtonProps } from "../../types";
+import * as React from 'react';
+import { IRadioButtonProps } from '../../types';
 
-const RadioButton: React.FC<IRadioButtonProps> = ({
-  name,
-  value,
-  checked,
-  onChange,
-  label,
-}) => (
+const RadioButton: React.FC<IRadioButtonProps> = ({ name, value, checked, onChange, label }) => (
   <>
-    <input
-      type="radio"
-      name={name}
-      value={value}
-      checked={checked}
-      onChange={onChange}
-    />
+    <input type="radio" name={name} value={value} checked={checked} onChange={onChange} />
     <label>{label}</label>
   </>
 );

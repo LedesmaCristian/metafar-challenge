@@ -1,13 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
-const BASE_URL = "https://api.twelvedata.com";
-const API_KEY = "cb192ad241b44c4e87a7f63291f8d574";
+const BASE_URL = 'https://api.twelvedata.com';
+const API_KEY = 'cb192ad241b44c4e87a7f63291f8d574';
 
 export const getStockData = async (symbol: string) => {
   try {
     const response = await axios.get(`${BASE_URL}/stocks`, {
       params: {
-        source: "docs",
+        source: 'docs',
         symbol: symbol,
       },
     });
@@ -22,22 +22,22 @@ export const getStockListForAutocomplete = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/stocks`, {
       params: {
-        source: "docs",
-        exchange: "NASDAQ",
+        source: 'docs',
+        exchange: 'NASDAQ',
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching stock list for Autocomplete:", error);
+    console.error('Error fetching stock list for Autocomplete:', error);
     throw error;
   }
 };
 
 export const getStockQuote = async (
   symbol: string,
-  interval = "5min",
+  interval = '5min',
   startDate: string,
-  endDate: string
+  endDate: string,
 ) => {
   try {
     let url = `${BASE_URL}/time_series?symbol=${symbol}&interval=${interval}&apikey=${API_KEY}`;
@@ -47,7 +47,7 @@ export const getStockQuote = async (
     const response = await axios.get(url);
     return response.data;
   } catch (error) {
-    console.error("Error fetching stock quote:", error);
+    console.error('Error fetching stock quote:', error);
     throw error;
   }
 };

@@ -1,10 +1,10 @@
-import * as React from "react";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
-import { IStockData, IValuesStockData } from "../types";
+import * as React from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import type { TwelveDataTimeSeriesResponse, TwelveDataOHLCV } from '@/api/types';
 
 interface IChartProps {
-  stockData: IStockData;
+  stockData: TwelveDataTimeSeriesResponse;
 }
 
 const ChartScreen: React.FC<IChartProps> = React.memo(({ stockData }) => {
@@ -14,29 +14,25 @@ const ChartScreen: React.FC<IChartProps> = React.memo(({ stockData }) => {
         text: stockData.meta.symbol,
       },
       xAxis: {
-        categories: stockData.values.map(
-          (item: IValuesStockData) => item.datetime
-        ),
-        title: { text: "Interval" },
+        categories: stockData.values.map((item: TwelveDataOHLCV) => item.datetime),
+        title: { text: 'Interval' },
       },
       yAxis: {
-        title: { text: "Price" },
+        title: { text: 'Price' },
       },
       series: [
         {
-          name: "Interval",
-          data: stockData.values.map((item: IValuesStockData) =>
-            parseFloat(item.close)
-          ),
+          name: 'Interval',
+          data: stockData.values.map((item: TwelveDataOHLCV) => parseFloat(item.close)),
         },
       ],
     }),
-    [stockData]
+    [stockData],
   );
 
   return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;
 });
 
-ChartScreen.displayName = "ChartScreen";
+ChartScreen.displayName = 'ChartScreen';
 
 export default ChartScreen;

@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   TableBody,
   TableRow as MuiTableRow,
@@ -9,17 +9,17 @@ import {
   Box,
   Button,
   Typography,
-} from "@mui/material";
-import { TextField, TableHeader, TableRow } from "./atomics/index";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { useQueryClient } from "@tanstack/react-query";
-import { useStockList } from "../hooks/queries/useStockList";
-import { getStocks } from "../services/stockService";
-import useDebounce from "../hooks/useDebounce";
-import type { TwelveDataStock } from "../api/types";
+} from '@mui/material';
+import { TextField, TableHeader, TableRow } from './atomics/index';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useQueryClient } from '@tanstack/react-query';
+import { useStockList } from '../hooks/queries/useStockList';
+import { getStocks } from '../services/stockService';
+import useDebounce from '../hooks/useDebounce';
+import type { TwelveDataStock } from '../api/types';
 
 // ─── Column widths (shared between header and body) ──────────────────────────
-const COL_WIDTHS = ["15%", "50%", "15%", "20%"] as const;
+const COL_WIDTHS = ['15%', '50%', '15%', '20%'] as const;
 
 const ColGroup: React.FC = () => (
   <colgroup>
@@ -45,8 +45,8 @@ const SKELETON_KEYS = Array.from({ length: SKELETON_COUNT }, (_, i) => i);
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const StockTable: React.FC = () => {
-  const [searchName, setSearchName] = React.useState<string>("");
-  const [searchSymbol, setSearchSymbol] = React.useState<string>("");
+  const [searchName, setSearchName] = React.useState<string>('');
+  const [searchSymbol, setSearchSymbol] = React.useState<string>('');
 
   const parentRef = React.useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -61,9 +61,9 @@ const StockTable: React.FC = () => {
       stocks.filter(
         (stock) =>
           stock.name.toLowerCase().includes(debouncedSearchName.toLowerCase()) &&
-          stock.symbol.toLowerCase().includes(debouncedSearchSymbol.toLowerCase())
+          stock.symbol.toLowerCase().includes(debouncedSearchSymbol.toLowerCase()),
       ),
-    [stocks, debouncedSearchName, debouncedSearchSymbol]
+    [stocks, debouncedSearchName, debouncedSearchSymbol],
   );
 
   const virtualizer = useVirtualizer({
@@ -73,29 +73,26 @@ const StockTable: React.FC = () => {
     overscan: 5,
   });
 
-  const handleSearchNameChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchName(event.target.value);
-    },
-    []
-  );
+  const handleSearchNameChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchName(event.target.value);
+  }, []);
 
   const handleSearchSymbolChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchSymbol(event.target.value);
     },
-    []
+    [],
   );
 
   const handlePrefetch = React.useCallback(
     (symbol: string) => {
       queryClient.prefetchQuery({
-        queryKey: ["stock", symbol],
-        queryFn: () => getStocks({ symbol, source: "docs" }),
+        queryKey: ['stock', symbol],
+        queryFn: () => getStocks({ symbol, source: 'docs' }),
         staleTime: Infinity,
       });
     },
-    [queryClient]
+    [queryClient],
   );
 
   // ── Derive padding spacers for virtualizer ──────────────────────────────────
@@ -116,18 +113,14 @@ const StockTable: React.FC = () => {
           </Button>
         }
       >
-        {error?.message ?? "Error al cargar la lista de acciones."}
+        {error?.message ?? 'Error al cargar la lista de acciones.'}
       </Alert>
     );
   }
 
   return (
     <>
-      <TextField
-        label="Buscar por nombre"
-        value={searchName}
-        onChange={handleSearchNameChange}
-      />
+      <TextField label="Buscar por nombre" value={searchName} onChange={handleSearchNameChange} />
       <TextField
         label="Buscar por símbolo"
         value={searchSymbol}
@@ -140,21 +133,21 @@ const StockTable: React.FC = () => {
           ref={parentRef}
           sx={{
             height: 600,
-            overflowY: "auto",
+            overflowY: 'auto',
             // Make the sticky thead work inside overflow container
-            "& thead": {
-              position: "sticky",
+            '& thead': {
+              position: 'sticky',
               top: 0,
               zIndex: 1,
-              bgcolor: "background.paper",
+              bgcolor: 'background.paper',
             },
           }}
         >
           <table
             style={{
-              width: "100%",
-              tableLayout: "fixed",
-              borderCollapse: "collapse",
+              width: '100%',
+              tableLayout: 'fixed',
+              borderCollapse: 'collapse',
             }}
           >
             <ColGroup />
@@ -168,31 +161,19 @@ const StockTable: React.FC = () => {
                   {/* Top spacer */}
                   {paddingTop > 0 && (
                     <MuiTableRow>
-                      <TableCell
-                        colSpan={4}
-                        sx={{ height: paddingTop, p: 0, border: 0 }}
-                      />
+                      <TableCell colSpan={4} sx={{ height: paddingTop, p: 0, border: 0 }} />
                     </MuiTableRow>
                   )}
 
                   {virtualItems.map((virtualItem) => {
                     const stock = filteredStocks[virtualItem.index];
-                    return (
-                      <TableRow
-                        key={stock.symbol}
-                        stock={stock}
-                        onHover={handlePrefetch}
-                      />
-                    );
+                    return <TableRow key={stock.symbol} stock={stock} onHover={handlePrefetch} />;
                   })}
 
                   {/* Bottom spacer */}
                   {paddingBottom > 0 && (
                     <MuiTableRow>
-                      <TableCell
-                        colSpan={4}
-                        sx={{ height: paddingBottom, p: 0, border: 0 }}
-                      />
+                      <TableCell colSpan={4} sx={{ height: paddingBottom, p: 0, border: 0 }} />
                     </MuiTableRow>
                   )}
                 </>
@@ -202,8 +183,8 @@ const StockTable: React.FC = () => {
         </Box>
 
         {!isLoading && (
-          <Typography variant="caption" sx={{ px: 2, py: 1, display: "block" }}>
-            {filteredStocks.length} resultado{filteredStocks.length !== 1 ? "s" : ""}
+          <Typography variant="caption" sx={{ px: 2, py: 1, display: 'block' }}>
+            {filteredStocks.length} resultado{filteredStocks.length !== 1 ? 's' : ''}
           </Typography>
         )}
       </Paper>

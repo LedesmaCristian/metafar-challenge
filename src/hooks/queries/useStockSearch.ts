@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { searchSymbols } from '../../services/stockService';
-import type { TwelveDataSymbolSearchResponse } from '../../api/types';
+import { searchSymbols } from '@/services/stockService';
+import type { TwelveDataSymbolSearchResponse } from '@/api/types';
 
 export function useStockSearch(query: string) {
   return useQuery<TwelveDataSymbolSearchResponse, Error>({

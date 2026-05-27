@@ -1,5 +1,5 @@
-import * as React from "react";
-import { TableHead, TableRow, TableCell } from "@mui/material";
+import * as React from 'react';
+import { TableHead, TableRow, TableCell } from '@mui/material';
 
 const StockTableHeader: React.FC = () => (
   <TableHead>

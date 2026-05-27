@@ -1,12 +1,14 @@
-import * as React from "react";
-import { IDateInputProps } from "../../types";
+import * as React from 'react';
+import { IDateInputProps } from '../../types';
 
-const DateInput: React.FC<IDateInputProps> = ({
-  disabled,
-  value,
-  onChange,
-}) => (
-  <input type="datetime-local" disabled={disabled} value={value} onChange={onChange} style={styles.dateInput} />
+const DateInput: React.FC<IDateInputProps> = ({ disabled, value, onChange }) => (
+  <input
+    type="datetime-local"
+    disabled={disabled}
+    value={value}
+    onChange={onChange}
+    style={styles.dateInput}
+  />
 );
 
 const styles = {
@@ -18,7 +20,7 @@ const styles = {
   dateInput: {
     padding: '5px',
     fontSize: '14px',
-  }
+  },
 };
 
 export default DateInput;

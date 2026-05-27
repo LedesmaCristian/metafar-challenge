@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useParams } from "react-router-dom";
+import * as React from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Alert,
   Box,
@@ -8,24 +8,24 @@ import {
   CircularProgress,
   LinearProgress,
   Skeleton,
-} from "@mui/material";
-import { StockPreferenceForm } from "./index";
-import { useStockData } from "../hooks/queries/useStockData";
-import { useStockQuote } from "../hooks/queries/useStockQuote";
-import type { StockQuoteParams } from "./StockPreferenceForm";
+} from '@mui/material';
+import { StockPreferenceForm } from './index';
+import { useStockData } from '../hooks/queries/useStockData';
+import { useStockQuote } from '../hooks/queries/useStockQuote';
+import type { StockQuoteParams } from './StockPreferenceForm';
 
 // Lazy-loaded so Highcharts lives in its own chunk
-const Chart = React.lazy(() => import("./StockChart"));
+const Chart = React.lazy(() => import('./StockChart'));
 
 const CHART_HEIGHT = 400;
 
 const Detail: React.FC = () => {
-  const { symbol = "MELI" } = useParams<{ symbol: string }>();
+  const { symbol = 'MELI' } = useParams<{ symbol: string }>();
 
   const [quoteParams, setQuoteParams] = React.useState<StockQuoteParams>({
-    interval: "5min",
-    startDate: "",
-    endDate: "",
+    interval: '5min',
+    startDate: '',
+    endDate: '',
     isRealTime: true,
   });
 
@@ -57,7 +57,7 @@ const Detail: React.FC = () => {
           </Button>
         }
       >
-        {error?.message ?? "Error al cargar los datos del gráfico."}
+        {error?.message ?? 'Error al cargar los datos del gráfico.'}
       </Alert>
     );
   }
@@ -80,17 +80,15 @@ const Detail: React.FC = () => {
         onParamsChange={handleParamsChange}
       />
 
-      <Box sx={{ position: "relative", mt: 2 }}>
+      <Box sx={{ position: 'relative', mt: 2 }}>
         {/* Background refetch indicator */}
         {isFetching && (
-          <LinearProgress
-            sx={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }}
-          />
+          <LinearProgress sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 2 }} />
         )}
 
         {/* Live badge */}
         {quoteParams.isRealTime && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
             <Chip label="En vivo" color="success" size="small" />
           </Box>
         )}
@@ -101,9 +99,9 @@ const Detail: React.FC = () => {
               <Box
                 sx={{
                   height: CHART_HEIGHT,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <CircularProgress />

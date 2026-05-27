@@ -1,10 +1,10 @@
-import apiClient from '../api/client';
-import { ENDPOINTS } from '../api/endpoints';
+import apiClient from '@/api/client';
+import { ENDPOINTS } from '@/api/endpoints';
 import type {
   TwelveDataStock,
   TwelveDataStocksResponse,
   TwelveDataSymbolSearchResponse,
-} from '../api/types';
+} from '@/api/types';
 
 export interface GetStocksParams {
   symbol?: string;

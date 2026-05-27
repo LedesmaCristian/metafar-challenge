@@ -1,11 +1,6 @@
-import React from "react";
-import {
-  RadioButton,
-  DateInput,
-  IntervalSelect,
-  Button,
-} from "./atomics/index";
-import { getCurrentDay } from "../helpers";
+import React from 'react';
+import { RadioButton, DateInput, IntervalSelect, Button } from './atomics/index';
+import { getCurrentDay } from '../helpers';
 
 export interface StockQuoteParams {
   interval: string;
@@ -16,8 +11,8 @@ export interface StockQuoteParams {
 
 interface StockPreferenceFormProps {
   symbol: string;
-  stockName?: string;
-  stockCurrency?: string;
+  stockName?: string | undefined;
+  stockCurrency?: string | undefined;
   onParamsChange: (params: StockQuoteParams) => void;
 }
 
@@ -27,9 +22,9 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
   stockCurrency,
   onParamsChange,
 }) => {
-  const [interval, setInterval] = React.useState<string>("5min");
-  const [startDate, setStartDate] = React.useState<string>("");
-  const [endDate, setEndDate] = React.useState<string>("");
+  const [interval, setInterval] = React.useState<string>('5min');
+  const [startDate, setStartDate] = React.useState<string>('');
+  const [endDate, setEndDate] = React.useState<string>('');
   const [isRealTime, setIsRealTime] = React.useState<boolean>(true);
 
   const handleSubmit = React.useCallback(
@@ -37,63 +32,51 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
       event.preventDefault();
       onParamsChange({ interval, startDate, endDate, isRealTime });
     },
-    [onParamsChange, interval, startDate, endDate, isRealTime]
+    [onParamsChange, interval, startDate, endDate, isRealTime],
   );
 
-  const handleIntervalChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setInterval(event.target.value);
-    },
-    []
-  );
+  const handleIntervalChange = React.useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setInterval(event.target.value);
+  }, []);
 
-  const handleStartDateChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setStartDate(event.target.value);
-    },
-    []
-  );
+  const handleStartDateChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(event.target.value);
+  }, []);
 
-  const handleEndDateChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEndDate(event.target.value);
-    },
-    []
-  );
+  const handleEndDateChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(event.target.value);
+  }, []);
 
-  const handleCheckboxChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const rt = event.target.value === "realtime";
-      if (rt) {
-        const today = getCurrentDay();
-        setStartDate(today);
-        setEndDate(today);
-      }
-      setIsRealTime(rt);
-    },
-    []
-  );
+  const handleCheckboxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const rt = event.target.value === 'realtime';
+    if (rt) {
+      const today = getCurrentDay();
+      setStartDate(today);
+      setEndDate(today);
+    }
+    setIsRealTime(rt);
+  }, []);
 
   return (
     <form
       onSubmit={handleSubmit}
       style={{
-        display: "flex",
-        flexDirection: "column",
-        borderBottom: "1px solid #ccc",
-        padding: "10px",
-        marginBottom: "20px",
+        display: 'flex',
+        flexDirection: 'column',
+        borderBottom: '1px solid #ccc',
+        padding: '10px',
+        marginBottom: '20px',
       }}
     >
       <div style={styles.headerContainer}>
         <div style={styles.headerTitle}>
           {symbol}
-          {stockName ? ` - ${stockName}` : ""}
-          {stockCurrency ? ` - ${stockCurrency}` : ""}
+          {stockName ? ` - ${stockName}` : ''}
+          {stockCurrency ? ` - ${stockCurrency}` : ''}
         </div>
         <div style={styles.headerUser}>Usuario: Juan</div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={styles.radioContainer}>
           <RadioButton
             name="dataOption"
@@ -103,9 +86,8 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
             label="Tiempo Real"
           />
           <span style={styles.description}>
-            (utiliza la fecha actual, al graficar esta opción, se debe
-            actualizar el gráfico en forma automática según el intervalo
-            seleccionado)
+            (utiliza la fecha actual, al graficar esta opción, se debe actualizar el gráfico en
+            forma automática según el intervalo seleccionado)
           </span>
         </div>
         <div style={styles.radioContainer}>
@@ -146,45 +128,45 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
 
 const styles: Record<string, React.CSSProperties> = {
   headerContainer: {
-    display: "flex",
-    justifyContent: "space-between",
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   headerTitle: {
-    fontSize: "24px",
-    marginBottom: "10px",
+    fontSize: '24px',
+    marginBottom: '10px',
   },
   headerUser: {
-    marginTop: "10px",
-    fontSize: "18px",
-    textAlign: "right",
+    marginTop: '10px',
+    fontSize: '18px',
+    textAlign: 'right',
   },
   description: {
-    fontSize: "12px",
-    color: "#666",
-    marginLeft: "5px",
+    fontSize: '12px',
+    color: '#666',
+    marginLeft: '5px',
   },
   radioContainer: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "10px",
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
   },
   dateInputContainer: {
-    margin: "0px 5px",
+    margin: '0px 5px',
   },
   dateInput: {
-    padding: "5px",
-    fontSize: "14px",
-    margin: "10px 0px",
+    padding: '5px',
+    fontSize: '14px',
+    margin: '10px 0px',
   },
   intervalSelect: {
-    padding: "5px",
-    fontSize: "17px",
-    marginBottom: "10px",
+    padding: '5px',
+    fontSize: '17px',
+    marginBottom: '10px',
   },
   button: {
-    padding: "5px 10px",
-    fontSize: "14px",
-    cursor: "pointer",
+    padding: '5px 10px',
+    fontSize: '14px',
+    cursor: 'pointer',
   },
 };
 
