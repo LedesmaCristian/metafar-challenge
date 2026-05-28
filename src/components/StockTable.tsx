@@ -15,9 +15,11 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { TableHeader, TableRow } from './atomics/index';
+import { TABLE_HEADER_BG } from '@/theme';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQueryClient } from '@tanstack/react-query';
 import { useStockList } from '@/hooks/queries/useStockList';
+import { queryKeys } from '@/hooks/queries/queryKeys';
 import { getStocks } from '@/services/stockService';
 import useDebounce from '@/hooks/useDebounce';
 import type { TwelveDataStock } from '@/api/types';
@@ -91,7 +93,7 @@ const StockTable: React.FC = () => {
   const handlePrefetch = React.useCallback(
     (symbol: string) => {
       queryClient.prefetchQuery({
-        queryKey: ['stock', symbol],
+        queryKey: queryKeys.stocks.detail(symbol),
         queryFn: () => getStocks({ symbol, source: 'docs' }),
         staleTime: Infinity,
       });
@@ -190,7 +192,7 @@ const StockTable: React.FC = () => {
               position: 'sticky',
               top: 0,
               zIndex: 1,
-              bgcolor: '#F5F7FA',
+              bgcolor: TABLE_HEADER_BG,
             },
           }}
         >

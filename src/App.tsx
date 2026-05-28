@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
+import { ROUTES } from '@/constants';
 
 const StockTable = React.lazy(() => import('./components/StockTable'));
 const Detail = React.lazy(() => import('./components/Detail'));
@@ -23,8 +24,8 @@ const App: React.FC = () => {
     <BrowserRouter>
       <React.Suspense fallback={<SuspenseFallback />}>
         <Routes>
-          <Route path="/" element={<StockTable />} />
-          <Route path="/stock/:symbol" element={<Detail />} />
+          <Route path={ROUTES.HOME} element={<StockTable />} />
+          <Route path={ROUTES.STOCK_DETAIL} element={<Detail />} />
         </Routes>
       </React.Suspense>
     </BrowserRouter>

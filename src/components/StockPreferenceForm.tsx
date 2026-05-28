@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { getCurrentDay } from '@/helpers';
+import { INTERVALS, DEFAULT_INTERVAL } from '@/constants';
 
 export interface StockQuoteParams {
   interval: string;
@@ -28,23 +29,13 @@ interface StockPreferenceFormProps {
   onParamsChange: (params: StockQuoteParams) => void;
 }
 
-const INTERVAL_OPTIONS = [
-  { value: '1min', label: '1 min' },
-  { value: '5min', label: '5 min' },
-  { value: '15min', label: '15 min' },
-  { value: '30min', label: '30 min' },
-  { value: '1h', label: '1 h' },
-  { value: '4h', label: '4 h' },
-  { value: '1day', label: '1 día' },
-];
-
 const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
   symbol,
   stockName,
   stockCurrency,
   onParamsChange,
 }) => {
-  const [interval, setInterval] = React.useState<string>('5min');
+  const [interval, setInterval] = React.useState<string>(DEFAULT_INTERVAL);
   const [startDate, setStartDate] = React.useState<string>('');
   const [endDate, setEndDate] = React.useState<string>('');
   const [isRealTime, setIsRealTime] = React.useState<boolean>(true);
@@ -86,23 +77,16 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 2, sm: 3 } }} noValidate>
       {/* ── Header ── */}
-      <Box
-        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}
-      >
-        <Box>
-          <Typography variant="h6" fontWeight={600}>
-            {symbol}
-            {stockName ? ` — ${stockName}` : ''}
-          </Typography>
-          {stockCurrency && (
-            <Typography variant="body2" color="text.secondary">
-              Moneda: {stockCurrency}
-            </Typography>
-          )}
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          Usuario: Juan
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="h6" fontWeight={600}>
+          {symbol}
+          {stockName ? ` — ${stockName}` : ''}
         </Typography>
+        {stockCurrency && (
+          <Typography variant="body2" color="text.secondary">
+            Moneda: {stockCurrency}
+          </Typography>
+        )}
       </Box>
 
       {/* ── Controls row ── */}
@@ -158,7 +142,7 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
             onChange={handleIntervalChange}
             label="Intervalo"
           >
-            {INTERVAL_OPTIONS.map((opt) => (
+            {INTERVALS.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>
                 {opt.label}
               </MenuItem>

@@ -1,15 +1,23 @@
-import { createTheme } from '@mui/material/styles';
+import { alpha, createTheme } from '@mui/material/styles';
+
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const PRIMARY_MAIN = '#1565C0';
+const SECONDARY_MAIN = '#00897B';
+const BACKGROUND_DEFAULT = '#F0F4F8';
+
+/** Background colour used by table headers — exported for reuse in components. */
+export const TABLE_HEADER_BG = '#F5F7FA';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1565C0',
+      main: PRIMARY_MAIN,
     },
     secondary: {
-      main: '#00897B',
+      main: SECONDARY_MAIN,
     },
     background: {
-      default: '#F0F4F8',
+      default: BACKGROUND_DEFAULT,
     },
   },
   typography: {
@@ -38,7 +46,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: 'rgba(21, 101, 192, 0.04)',
+            backgroundColor: alpha(PRIMARY_MAIN, 0.04),
           },
         },
       },

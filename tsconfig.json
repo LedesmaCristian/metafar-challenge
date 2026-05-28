@@ -26,7 +26,10 @@
     /* Path aliases */
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    /* Vitest globals */
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

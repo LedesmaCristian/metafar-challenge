@@ -3,11 +3,11 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import type { TwelveDataTimeSeriesResponse, TwelveDataOHLCV } from '@/api/types';
 
-interface IChartProps {
+interface ChartProps {
   stockData: TwelveDataTimeSeriesResponse;
 }
 
-const ChartScreen: React.FC<IChartProps> = React.memo(({ stockData }) => {
+const StockChart: React.FC<ChartProps> = React.memo(({ stockData }) => {
   const chartOptions = React.useMemo(
     () => ({
       title: {
@@ -33,6 +33,6 @@ const ChartScreen: React.FC<IChartProps> = React.memo(({ stockData }) => {
   return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;
 });
 
-ChartScreen.displayName = 'ChartScreen';
+StockChart.displayName = 'StockChart';
 
-export default ChartScreen;
+export default StockChart;

@@ -17,12 +17,21 @@ import HomeIcon from '@mui/icons-material/Home';
 import { StockPreferenceForm } from './index';
 import { useStockData } from '@/hooks/queries/useStockData';
 import { useStockQuote } from '@/hooks/queries/useStockQuote';
+import { ROUTES } from '@/constants';
 import type { StockQuoteParams } from './StockPreferenceForm';
 
 // Lazy-loaded so Highcharts lives in its own chunk
 const Chart = React.lazy(() => import('./StockChart'));
 
 const CHART_HEIGHT = 400;
+
+// Shared sx for the centred placeholder inside the chart card
+const chartPlaceholderSx = {
+  height: CHART_HEIGHT,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+} as const;
 
 const Detail: React.FC = () => {
   const { symbol = 'MELI' } = useParams<{ symbol: string }>();
@@ -85,7 +94,7 @@ const Detail: React.FC = () => {
       <Breadcrumbs sx={{ mb: 2 }} aria-label="navegación">
         <Link
           component={RouterLink}
-          to="/"
+          to={ROUTES.HOME}
           underline="hover"
           color="inherit"
           sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
@@ -148,14 +157,7 @@ const Detail: React.FC = () => {
           {quoteData ? (
             <React.Suspense
               fallback={
-                <Box
-                  sx={{
-                    height: CHART_HEIGHT,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
+                <Box sx={chartPlaceholderSx}>
                   <CircularProgress />
                 </Box>
               }
@@ -163,14 +165,7 @@ const Detail: React.FC = () => {
               <Chart stockData={quoteData} />
             </React.Suspense>
           ) : (
-            <Box
-              sx={{
-                height: CHART_HEIGHT,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box sx={chartPlaceholderSx}>
               <Typography color="text.secondary">
                 Configure los parámetros y presione Graficar
               </Typography>

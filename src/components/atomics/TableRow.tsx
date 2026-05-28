@@ -1,24 +1,25 @@
 import React from 'react';
 import { TableRow, TableCell, Chip, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { IStock } from '@/types';
+import type { TwelveDataStock } from '@/api/types';
+import { STOCK_TYPE_CHIP_COLORS, ROUTES } from '@/constants';
 
-// Map stock type to a Chip color
 type ChipColor = 'primary' | 'secondary' | 'warning' | 'info' | 'default';
+
 function typeChipColor(type: string): ChipColor {
-  if (type.toLowerCase().includes('common')) return 'primary';
-  if (type.toLowerCase().includes('etf')) return 'secondary';
-  if (type.toLowerCase().includes('warrant')) return 'warning';
-  if (type.toLowerCase().includes('preferred')) return 'info';
+  const lowerType = type.toLowerCase();
+  for (const [keyword, color] of Object.entries(STOCK_TYPE_CHIP_COLORS)) {
+    if (lowerType.includes(keyword)) return color as ChipColor;
+  }
   return 'default';
 }
 
-interface IStockTableRowProps {
-  stock: IStock;
+interface StockTableRowProps {
+  stock: TwelveDataStock;
   onHover?: (symbol: string) => void;
 }
 
-const StockTableRow: React.FC<IStockTableRowProps> = React.memo(({ stock, onHover }) => {
+const StockTableRow: React.FC<StockTableRowProps> = React.memo(({ stock, onHover }) => {
   const handleMouseEnter = React.useCallback(() => {
     onHover?.(stock.symbol);
   }, [onHover, stock.symbol]);
@@ -28,7 +29,7 @@ const StockTableRow: React.FC<IStockTableRowProps> = React.memo(({ stock, onHove
       <TableCell>
         <Typography
           component={Link}
-          to={`/stock/${stock.symbol}`}
+          to={ROUTES.stockDetail(stock.symbol)}
           variant="body2"
           fontWeight={600}
           color="primary"
