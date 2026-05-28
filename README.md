@@ -109,6 +109,20 @@ queryKeys.quotes.timeSeries('AAPL', '5min')  // ['quotes', 'timeSeries', 'AAPL',
 
 Al pasar el cursor sobre una fila de la tabla, se precarga el detalle de esa acción usando `queryClient.prefetchQuery()`. Cuando el usuario hace click, los datos ya están en caché y la navegación es instantánea.
 
+### Horarios de mercado y tiempo real
+
+El modo tiempo real usa `refetchInterval` dinámico según el intervalo seleccionado.
+Es importante considerar que la API de Twelve Data solo devuelve datos actualizados
+durante el horario de mercado de NASDAQ:
+
+- **Horario regular**: Lunes a viernes, 9:30 AM - 4:00 PM ET (Eastern Time)
+- **Pre-market**: 4:00 AM - 9:30 AM ET
+- **After-hours**: 4:00 PM - 8:00 PM ET
+
+Fuera de estos horarios, el gráfico en modo "Tiempo Real" mostrará los últimos
+datos disponibles del cierre anterior. Esto es comportamiento esperado de la API,
+no un bug de la aplicación.
+
 ---
 
 ## 🔧 Optimizaciones de Performance
