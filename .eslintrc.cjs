@@ -1,6 +1,7 @@
 /* eslint-env node */
 module.exports = {
   root: true,
+  ignorePatterns: ['*.md', 'dist/', 'coverage/'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
