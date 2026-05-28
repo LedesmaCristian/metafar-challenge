@@ -139,7 +139,6 @@ describe('StockTable', () => {
 
     renderWithProviders(<StockTable />);
 
-    // Wait for rows to appear
     await waitFor(() => expect(screen.getByText('AAPL')).toBeInTheDocument());
 
     const [nameInput] = screen.getAllByRole('textbox');
