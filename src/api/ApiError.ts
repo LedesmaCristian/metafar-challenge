@@ -1,4 +1,3 @@
-// ─── Custom API error ─────────────────────────────────────────────────────────
 // Wraps Twelve Data (and HTTP) errors with structured metadata, enabling
 // consumers to branch on status/code without string-parsing the message.
 

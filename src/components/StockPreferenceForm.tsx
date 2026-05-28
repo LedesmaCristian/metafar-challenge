@@ -76,7 +76,6 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 2, sm: 3 } }} noValidate>
-      {/* ── Header ── */}
       <Box sx={{ mb: 2 }}>
         <Typography variant="h6" fontWeight={600}>
           {symbol}
@@ -89,7 +88,6 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
         )}
       </Box>
 
-      {/* ── Controls row ── */}
       <Box
         sx={{
           display: 'flex',
@@ -98,7 +96,6 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
           flexWrap: { xs: 'wrap', md: 'nowrap' },
         }}
       >
-        {/* Mode toggle */}
         <ToggleButtonGroup
           value={isRealTime ? 'realtime' : 'history'}
           exclusive
@@ -133,7 +130,6 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
           sx={{ minWidth: 200 }}
         />
 
-        {/* Interval selector */}
         <FormControl size="small" sx={{ minWidth: 120, flexShrink: 0 }}>
           <InputLabel id="interval-label">Intervalo</InputLabel>
           <Select
@@ -150,7 +146,6 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
           </Select>
         </FormControl>
 
-        {/* Submit */}
         <Button
           type="submit"
           variant="contained"

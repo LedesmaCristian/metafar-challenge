@@ -1,5 +1,3 @@
-// ─── Application-wide constants ───────────────────────────────────────────────
-
 /** Supported stock exchanges. */
 export const EXCHANGES = {
   NASDAQ: 'NASDAQ',

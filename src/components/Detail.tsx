@@ -90,7 +90,6 @@ const Detail: React.FC = () => {
 
   return (
     <Box sx={{ p: { xs: 1, sm: 3 } }}>
-      {/* ── Breadcrumb ── */}
       <Breadcrumbs sx={{ mb: 2 }} aria-label="navegación">
         <Link
           component={RouterLink}
@@ -107,7 +106,6 @@ const Detail: React.FC = () => {
         </Typography>
       </Breadcrumbs>
 
-      {/* ── Stock header ── */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, flexWrap: 'wrap' }}>
         <Typography variant="h5" fontWeight={700}>
           {symbol}
@@ -130,7 +128,6 @@ const Detail: React.FC = () => {
         )}
       </Box>
 
-      {/* ── Preference form card ── */}
       <Paper elevation={2} sx={{ mb: 3, overflow: 'hidden' }}>
         <StockPreferenceForm
           symbol={symbol}
@@ -140,7 +137,6 @@ const Detail: React.FC = () => {
         />
       </Paper>
 
-      {/* ── Chart card ── */}
       <Paper elevation={2} sx={{ position: 'relative', overflow: 'hidden' }}>
         {/* Background refetch indicator inside the card */}
         {isFetching && (

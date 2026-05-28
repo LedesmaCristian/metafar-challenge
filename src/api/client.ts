@@ -11,7 +11,6 @@ const apiClient = axios.create({
   timeout: 10_000,
 });
 
-// ─── Retry policy ─────────────────────────────────────────────────────────────
 // Retries on network errors and 5xx responses only. 4xx errors (bad request,
 // unauthorized, rate-limit) are not retried — they require user action.
 axiosRetry(apiClient, {
@@ -25,7 +24,6 @@ axiosRetry(apiClient, {
   },
 });
 
-// ─── Request interceptor — inject API key ─────────────────────────────────────
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     config.params = {
@@ -37,7 +35,6 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-// ─── Response interceptor — centralised error handling ────────────────────────
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // Twelve Data returns HTTP 200 even for errors: { status: 'error', code: 4xx }

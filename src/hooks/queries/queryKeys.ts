@@ -1,4 +1,3 @@
-// ─── Query Key Factory ────────────────────────────────────────────────────────
 // Centralised source of truth for all React Query cache keys.
 // Using a factory prevents typos and makes invalidation straightforward.
 

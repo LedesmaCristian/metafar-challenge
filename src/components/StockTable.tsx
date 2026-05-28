@@ -24,7 +24,6 @@ import { getStocks } from '@/services/stockService';
 import useDebounce from '@/hooks/useDebounce';
 import type { TwelveDataStock } from '@/api/types';
 
-// ─── Column widths (shared between header and body) ──────────────────────────
 const COL_WIDTHS = ['15%', '45%', '12%', '28%'] as const;
 
 const ColGroup: React.FC = () => (
@@ -35,7 +34,6 @@ const ColGroup: React.FC = () => (
   </colgroup>
 );
 
-// ─── Skeleton row ─────────────────────────────────────────────────────────────
 const SkeletonTableRow: React.FC = () => (
   <MuiTableRow sx={{ height: 52 }}>
     {COL_WIDTHS.map((_, i) => (
@@ -49,7 +47,6 @@ const SkeletonTableRow: React.FC = () => (
 const SKELETON_COUNT = 10;
 const SKELETON_KEYS = Array.from({ length: SKELETON_COUNT }, (_, i) => i);
 
-// ─── Component ────────────────────────────────────────────────────────────────
 const StockTable: React.FC = () => {
   const [searchName, setSearchName] = React.useState<string>('');
   const [searchSymbol, setSearchSymbol] = React.useState<string>('');
@@ -101,14 +98,12 @@ const StockTable: React.FC = () => {
     [queryClient],
   );
 
-  // ── Derive padding spacers for virtualizer ──────────────────────────────────
   const virtualItems = virtualizer.getVirtualItems();
   const totalSize = virtualizer.getTotalSize();
   const paddingTop = virtualItems.length > 0 ? virtualItems[0].start : 0;
   const paddingBottom =
     virtualItems.length > 0 ? totalSize - virtualItems[virtualItems.length - 1].end : 0;
 
-  // ── Error state ─────────────────────────────────────────────────────────────
   if (isError) {
     return (
       <Box sx={{ p: 3 }}>
@@ -128,7 +123,6 @@ const StockTable: React.FC = () => {
 
   return (
     <Box sx={{ p: { xs: 1, sm: 3 } }}>
-      {/* ── Page header ── */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" fontWeight={600} color="text.primary">
           Mercado de Valores
@@ -138,7 +132,6 @@ const StockTable: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* ── Search bar ── */}
       <Box
         sx={{
           display: 'flex',
@@ -179,7 +172,6 @@ const StockTable: React.FC = () => {
         />
       </Box>
 
-      {/* ── Table card ── */}
       <Paper elevation={2}>
         {/* Scrollable container — parentRef for the virtualizer */}
         <Box

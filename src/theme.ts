@@ -1,6 +1,5 @@
 import { alpha, createTheme } from '@mui/material/styles';
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 const PRIMARY_MAIN = '#1565C0';
 const SECONDARY_MAIN = '#00897B';
 const BACKGROUND_DEFAULT = '#F0F4F8';

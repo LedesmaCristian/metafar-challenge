@@ -1,4 +1,3 @@
-// ─── Environment validation ───────────────────────────────────────────────────
 // Validates required env vars at module-load time so the app fails fast with
 // a clear message instead of a cryptic API error at runtime.
 
