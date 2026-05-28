@@ -11,6 +11,7 @@ export interface UseStockQuoteParams {
   startDate?: string;
   endDate?: string;
   isRealTime?: boolean;
+  isPaused?: boolean;
 }
 
 export function useStockQuote({
@@ -19,10 +20,14 @@ export function useStockQuote({
   startDate,
   endDate,
   isRealTime = false,
+  isPaused = false,
 }: UseStockQuoteParams) {
   // exactOptionalPropertyTypes: true requires `false` instead of `undefined` to
   // disable refetchInterval, and explicit undefined-guarded optional fields.
-  const refetchInterval: number | false = isRealTime ? intervalToMs(interval) : false;
+  const refetchInterval: number | false = isRealTime && !isPaused ? intervalToMs(interval) : false;
+
+  // React Query cancela automáticamente el request anterior via AbortSignal
+  // cuando cambian los parámetros o el componente se desmonta
 
   return useQuery<TwelveDataTimeSeriesResponse, Error>({
     queryKey: queryKeys.quotes.timeSeries(symbol, interval, startDate, endDate),
@@ -32,6 +37,7 @@ export function useStockQuote({
         interval,
         ...(startDate !== undefined ? { start_date: startDate } : {}),
         ...(endDate !== undefined ? { end_date: endDate } : {}),
+        ...(!isRealTime ? { outputsize: 500 } : {}),
       }),
     enabled: !!symbol,
     staleTime: 0,

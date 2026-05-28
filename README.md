@@ -109,6 +109,14 @@ queryKeys.quotes.timeSeries('AAPL', '5min')  // ['quotes', 'timeSeries', 'AAPL',
 
 Al pasar el cursor sobre una fila de la tabla, se precarga el detalle de esa acción usando `queryClient.prefetchQuery()`. Cuando el usuario hace click, los datos ya están en caché y la navegación es instantánea.
 
+### Cancelación automática de queries
+
+React Query cancela automáticamente el request anterior via AbortSignal cuando cambian los parámetros (symbol, interval, fechas) o cuando el componente se desmonta. Esto evita race conditions y requests huérfanos.
+
+### Invalidación de caché
+
+Se usa `staleTime: Infinity` para datos estáticos (lista de stocks, info de acciones) lo que evita invalidaciones innecesarias. Para datos en tiempo real `staleTime: 0` garantiza que siempre se revalida en background. La invalidación manual con `queryClient.invalidateQueries()` no es necesaria en este caso porque el ciclo de vida de los datos está manejado por los `refetchInterval` y `staleTime` configurados.
+
 ### Horarios de mercado y tiempo real
 
 El modo tiempo real usa `refetchInterval` dinámico según el intervalo seleccionado.
@@ -146,6 +154,11 @@ no un bug de la aplicación.
 - Configurado con `axios-retry`: 3 reintentos automáticos
 - Solo reintenta errores de red y 5xx — los 4xx no se reintentan (son errores del cliente)
 - Backoff exponencial para no saturar la API
+
+### 5. Optimización de Highcharts
+- `boost` module habilitado — aceleración GPU para datasets grandes (más de 1000 puntos)
+- `dataGrouping` configurado — agrupa puntos automáticamente cuando hay demasiados para el viewport
+- `outputsize: 500` para modo histórico — limita los puntos al máximo útil visualmente
 
 ---
 
@@ -217,6 +230,21 @@ Configurado con **Vitest** + **React Testing Library**.
 - `StockChart` — requiere mock complejo de Highcharts, ROI bajo
 - `Detail.tsx` — componente de integración, cubierto indirectamente por los tests de hooks
 - Interceptors completos de axios — parcialmente cubiertos, la lógica crítica está en los tests de servicios
+
+---
+
+## 🎨 UX y Manejo de Estados
+
+- **Skeleton loaders** por sección — tabla y detalle muestran placeholders mientras cargan
+- **Error boundaries** con botón "Reintentar" que llama a `refetch()`
+- **Modo tiempo real** con `refetchInterval` dinámico según intervalo seleccionado
+- **Chip "En vivo" / "Pausado"** — indicador visual del estado actual
+- **Pausa/reanudación** — botón para pausar el polling sin salir de la página
+- **LinearProgress** en background cuando `isFetching` es true (actualización silenciosa)
+- **Responsive** — la tabla y el detalle se adaptan a mobile con campos apilados verticalmente y scroll horizontal en la tabla
+- **Validación de fechas** — no permite fechas futuras ni fecha fin anterior a fecha inicio
+- **Empty state** — mensaje amigable cuando la API no devuelve datos para el período seleccionado
+- **Horarios de mercado** — documentado el comportamiento esperado fuera del horario NASDAQ
 
 ---
 

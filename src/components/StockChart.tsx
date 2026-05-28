@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Highcharts from 'highcharts';
+import 'highcharts/modules/boost';
 import HighchartsReact from 'highcharts-react-official';
 import { Box, Typography } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -14,6 +15,7 @@ const StockChart: React.FC<ChartProps> = React.memo(({ stockData }) => {
 
   const chartOptions = React.useMemo(
     () => ({
+      boost: { useGPUTranslations: true, usePreallocated: true },
       title: {
         text: stockData.meta.symbol,
       },
@@ -28,6 +30,7 @@ const StockChart: React.FC<ChartProps> = React.memo(({ stockData }) => {
         {
           name: 'Interval',
           data: stockData.values.map((item: TwelveDataOHLCV) => parseFloat(item.close)),
+          dataGrouping: { enabled: true, approximation: 'average', forced: false },
         },
       ],
     }),

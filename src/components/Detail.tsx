@@ -14,6 +14,10 @@ import {
   Typography,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { StockPreferenceForm } from './index';
 import { useStockData } from '@/hooks/queries/useStockData';
 import { useStockQuote } from '@/hooks/queries/useStockQuote';
@@ -36,6 +40,8 @@ const chartPlaceholderSx = {
 const Detail: React.FC = () => {
   const { symbol = 'MELI' } = useParams<{ symbol: string }>();
 
+  const [isPaused, setIsPaused] = React.useState<boolean>(false);
+
   const [quoteParams, setQuoteParams] = React.useState<StockQuoteParams>({
     interval: '5min',
     startDate: '',
@@ -52,13 +58,18 @@ const Detail: React.FC = () => {
     isError,
     error,
     refetch,
-  } = useStockQuote({ symbol, ...quoteParams });
+  } = useStockQuote({ symbol, ...quoteParams, isPaused });
 
   const stockInfo = stockList?.[0];
   const isInitialLoading = isStockLoading || isQuoteLoading;
 
   const handleParamsChange = React.useCallback((params: StockQuoteParams) => {
     setQuoteParams(params);
+    setIsPaused(false);
+  }, []);
+
+  const handleTogglePause = React.useCallback(() => {
+    setIsPaused((prev) => !prev);
   }, []);
 
   if (isError) {
@@ -119,12 +130,19 @@ const Detail: React.FC = () => {
           <Chip label={stockInfo.currency} size="small" variant="outlined" color="primary" />
         )}
         {quoteParams.isRealTime && (
-          <Chip
-            label="● En vivo"
-            size="small"
-            color="success"
-            sx={{ fontWeight: 600, animation: 'pulse 2s infinite' }}
-          />
+          <>
+            <Chip
+              label={isPaused ? '● Pausado' : '● En vivo'}
+              size="small"
+              color={isPaused ? 'default' : 'success'}
+              sx={{ fontWeight: 600, animation: isPaused ? 'none' : 'pulse 2s infinite' }}
+            />
+            <Tooltip title={isPaused ? 'Reanudar actualización' : 'Pausar actualización'}>
+              <IconButton size="small" onClick={handleTogglePause} color="primary">
+                {isPaused ? <PlayArrowIcon fontSize="small" /> : <PauseIcon fontSize="small" />}
+              </IconButton>
+            </Tooltip>
+          </>
         )}
       </Box>
 
