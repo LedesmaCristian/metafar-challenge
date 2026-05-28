@@ -40,6 +40,20 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
   const [endDate, setEndDate] = React.useState<string>('');
   const [isRealTime, setIsRealTime] = React.useState<boolean>(true);
 
+  const { startDateError, endDateError } = React.useMemo(() => {
+    if (isRealTime || !startDate || !endDate) return { startDateError: '', endDateError: '' };
+    const today = getCurrentDay();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const todayDate = new Date(today);
+    return {
+      startDateError: start > end ? 'La fecha de inicio no puede ser mayor a la fecha de fin' : '',
+      endDateError: end > todayDate ? 'La fecha de fin no puede ser una fecha futura' : '',
+    };
+  }, [isRealTime, startDate, endDate]);
+
+  const hasValidationErrors = Boolean(startDateError || endDateError);
+
   const handleSubmit = React.useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -109,26 +123,40 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
         </ToggleButtonGroup>
 
         {/* Date inputs — disabled in real-time mode */}
-        <TextField
-          label="Fecha inicio"
-          type="datetime-local"
-          value={startDate}
-          onChange={handleStartDateChange}
-          disabled={isRealTime}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          sx={{ minWidth: 200 }}
-        />
-        <TextField
-          label="Fecha fin"
-          type="datetime-local"
-          value={endDate}
-          onChange={handleEndDateChange}
-          disabled={isRealTime}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          sx={{ minWidth: 200 }}
-        />
+        <Box sx={{ position: 'relative' }}>
+          <TextField
+            label="Fecha inicio"
+            type="datetime-local"
+            value={startDate}
+            onChange={handleStartDateChange}
+            disabled={isRealTime}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            error={Boolean(startDateError)}
+            helperText={startDateError}
+            FormHelperTextProps={{
+              sx: { position: 'absolute', bottom: '-20px', whiteSpace: 'nowrap' },
+            }}
+            sx={{ minWidth: 220 }}
+          />
+        </Box>
+        <Box sx={{ position: 'relative' }}>
+          <TextField
+            label="Fecha fin"
+            type="datetime-local"
+            value={endDate}
+            onChange={handleEndDateChange}
+            disabled={isRealTime}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            error={Boolean(endDateError)}
+            helperText={endDateError}
+            FormHelperTextProps={{
+              sx: { position: 'absolute', bottom: '-20px', whiteSpace: 'nowrap' },
+            }}
+            sx={{ minWidth: 220 }}
+          />
+        </Box>
 
         <FormControl size="small" sx={{ minWidth: 120, flexShrink: 0 }}>
           <InputLabel id="interval-label">Intervalo</InputLabel>
@@ -150,6 +178,7 @@ const StockPreferenceForm: React.FC<StockPreferenceFormProps> = ({
           type="submit"
           variant="contained"
           color="primary"
+          disabled={hasValidationErrors}
           sx={{ flexShrink: 0, width: 160, ml: { md: 'auto' } }}
         >
           Graficar
